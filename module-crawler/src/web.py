@@ -45,7 +45,7 @@ class web(web_simple):
             os.makedirs(path)
         
         # tao ten file theo ham bam
-        path_file = path + self.code
+        path_file = path + self.code+".json"
         
         # Kiem tra xem file nay da dc tai ve hay chua 
         if os.path.exists(path_file):

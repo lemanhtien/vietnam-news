@@ -259,13 +259,15 @@ if __name__ == "__main__":
     #          web_x.get_json()
             
     # Cac trang co rss
-    for link_rss in rss_page_links:
-        parser = rss_parser(link_rss)
-        for web_x in  parser.get_list_web():
-            #web_x.write_to_file('Data')
+    # for link_rss in rss_page_links:
+    #     parser = rss_parser(link_rss)
+    #     for web_x in  parser.get_list_web():
+    #         web_x.write_to_file('/mnt/01CDF1ECE3AB4280/DH/NAM_5/Ki_1/TimkiemTrinhDien/BTL/vietnam-news/data-train')
             # print('----------------------')
             # print('Push data to DB')
             # print('----------------------')
             # #web_x.insert_to_db(db)
-             print (web_x.get_json())
+            # print (web_x.get_json())
 
+    s = os.system("java -version")
+    print (s)
