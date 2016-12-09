@@ -17,17 +17,18 @@ class web_simple:
         self.url = url
         self.title = title
         self.code = hashlib.sha1(self.url).hexdigest()
-        domain = re.search('(?<=http://)[^/]+', url)
-        if domain != None:
-            self.domain = domain.group(0)
-        else:
-            self.domain = "Unknow"
+        # domain = re.search('(?<=http://)[^/]+', url)
+        # if domain != None:
+        #     self.domain = domain.group(0)
+        # else:
+        #     self.domain = "Unknow"
 
         date_tmp = ""
         if date != None and date.__len__() > 0:
             try:
                 date_x = dateutil_parser.parse(date)
                 date_tmp = date_x.date().__str__() + ", " + date_x.timetz().__str__()
+                date_tmp = date_x.strftime("%Y-%m-%dT%H:%M:%SZ")
             except Exception, e:
                 print "[Exception - parse date when init web_simple object]" + str(e)
                 date_tmp = ""

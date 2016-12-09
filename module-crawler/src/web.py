@@ -17,7 +17,8 @@ from labels_general import *
 from database import *
 
 
-class web(web_simple, label_general):
+# class web(web_simple """, label_general"""):
+class web(web_simple ):
     """
         Doi tuong thao tac chinh voi 1 trang web 
     """
@@ -27,7 +28,7 @@ class web(web_simple, label_general):
 
         # khoi tao cha
         web_simple.__init__(self, url, image_url, title, date)
-        label_general.__init__(self, labels)
+        # label_general.__init__(self, labels)
 
         # cai dat thuoc tinh
         self.content = content

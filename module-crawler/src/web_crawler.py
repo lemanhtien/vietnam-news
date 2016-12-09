@@ -226,10 +226,10 @@ if __name__ == "__main__":
     
     max_count_web = 500
     rss_page_links = [
-        "http://vietbao.vn/vn/rss",
-        "http://vnexpress.net/rss",
+        # "http://vietbao.vn/vn/rss",
+        # "http://vnexpress.net/rss",
         "http://dantri.com.vn/rss",
-        "http://vtv.vn/rss",
+        # "http://vtv.vn/rss",
         "http://techtalk.vn/"
     ]
     web_mannual_page_links = [
@@ -245,8 +245,8 @@ if __name__ == "__main__":
     # Cai dat bo loc crawl web
     # Web_filter.set_last_time("2016-10-26, 22:20:08+07:00")  # Bai viet moi hon ke tu thoi diem xxx
     # Web_filter.set_limit_time("2016-10-26, 22:20:08+07:00", "2016-10-26, 23:20:08+07:00")  # Bai viet trong khoang tg
-    Web_filter.set_max_count_web_each_domain(10000)  # moi domain khong vuot qua 1000
-    Web_filter.set_max_count_web_each_sublabel(2)  # moi label trong 1 domain k vuot qua 100
+    Web_filter.set_max_count_web_each_domain(5)  # moi domain khong vuot qua 1000
+    Web_filter.set_max_count_web_each_sublabel(1)  # moi label trong 1 domain k vuot qua 100
 
 
 
@@ -268,8 +268,8 @@ if __name__ == "__main__":
             # print('Push data to DB')
             # print('----------------------')
             #web_x.insert_to_db(db)
-            # print (web_x.get_json())
-            print web_x.get_label_general()
+            print (web_x.get_json())
+            # print web_x.get_label_general()
             # print (web_x.get_labels(1))
             
 
