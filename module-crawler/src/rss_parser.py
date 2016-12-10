@@ -160,6 +160,7 @@ class rss_parser():
                             element = web(url1, image_url, title, content_paper['content_text'], content_paper['labels'], date)
                             count_web_curent_label +=1  # bien dem so luong web 1 label, vd: label = dantri/Kinhte
                             list_webs.append(element)
+                            Web_filter.add_link_code_crawled(element.get_code())
                 
             return  list_webs
 

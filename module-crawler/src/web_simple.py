@@ -52,3 +52,6 @@ class web_simple:
 
     def get_domain(self):
         return self.domain
+
+    def get_code(self):
+        return self.code

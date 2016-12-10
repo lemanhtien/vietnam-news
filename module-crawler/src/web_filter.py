@@ -9,6 +9,8 @@ class Web_filter(object):
         None
 
     # thoi gian cuoi cung de 1 trang web dc chap nhan crawl ve, cac trang web publish sau thoi diem nay se dc chap nhan
+    lst_link_code_crawled = []
+    # thoi gian cuoi cung de 1 trang web dc chap nhan crawl ve, cac trang web publish sau thoi diem nay se dc chap nhan
     check_last_time = None
     # so web toi da 1 sublabel
     check_max_count_web_each_sublabel = None
@@ -52,6 +54,11 @@ class Web_filter(object):
     def check(web_x, count_web_each_sublabel = 100000, count_web_each_domain = 100000):
         b_ret = True
         try:
+            # Kiem tra xem web nay da crawler hay chua
+            if b_ret == True:
+                link_encode = web_x.get_code()
+                b_ret = link_encode not in Web_filter.lst_link_code_crawled
+
             if b_ret == True and Web_filter.check_last_time != None:
                 b_ret = web_x.get_date_obj() > Web_filter.check_last_time
 
@@ -70,7 +77,20 @@ class Web_filter(object):
 
         return b_ret
 
-    # set_last_time = staticmethod(set_last_time)
+    @staticmethod
+    def add_link_code_crawled(link_encode):
+        # Kiem tra link_code da duoc crawled hay chua
+        if (link_encode not in Web_filter.lst_link_code_crawled):
+            # them vao ds neu link_code ko co
+            Web_filter.lst_link_code_crawled.append(link_encode)
+            # Gioi han cho ds luu tru link_code ko vuot qua 10000 moi nhat
+            # Do moi lan crawl chi duoc 2000 nen khong can thiet kiem tra phan tu xa truoc do
+            if (Web_filter.lst_link_code_crawled.__len__() > 10000):
+                Web_filter.lst_link_code_crawled = Web_filter.lst_link_code_crawled[5000:]
+
+
+
+            # set_last_time = staticmethod(set_last_time)
     # set_max_count_web_each_sublabel = staticmethod(set_max_count_web_each_sublabel)
     # set_max_count_web_each_domain = staticmethod(set_max_count_web_each_domain)
     # remove_all_check = staticmethod(remove_all_check)
@@ -83,7 +103,10 @@ class Web_filter(object):
 #
 #
 if __name__ == '__main__':
-    Web_filter.set_max_count_web_each_domain(100)
-    hy= web("", "", "","","", "")
+    # Web_filter.set_max_count_web_each_domain(100)
+    hy= web("324hihihi", "", "","","", "")
+    hy2 = web("324hihihi", "", "", "", "", "")
     print hy.get_json()
-    print Web_filter.check(hy)
+    print Web_filter.check(hy,10)
+    Web_filter.add_link_code_crawled(hy.get_code())
+    print Web_filter.check(hy2, 10)
