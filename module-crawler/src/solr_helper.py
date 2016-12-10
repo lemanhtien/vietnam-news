@@ -79,10 +79,10 @@ def crawl_data_to_file_from_link_rss(path_folder_save, link_rss):
 
 def crawl_data_to_file(path_folder_save):
     rss_page_links = [
-        # "http://vietbao.vn/vn/rss",
-        # "http://vnexpress.net/rss",
+        "http://vietbao.vn/vn/rss",
+        "http://vnexpress.net/rss",
         "http://dantri.com.vn/rss",
-        # "http://vtv.vn/rss",
+        "http://vtv.vn/rss",
         "http://techtalk.vn/"
     ]
 
