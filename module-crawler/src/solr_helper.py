@@ -102,7 +102,7 @@ def crawl_data_to_file(path_folder_save):
         # nghi 15 phut cho lan crawl tiep theo
         idSleep += 1
         print "Id sleep to run new thread: {0}".format(idSleep)
-        time.sleep(20)
+        time.sleep(15*60)
 
 
 def crawl_data():
