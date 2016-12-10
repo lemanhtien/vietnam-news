@@ -156,8 +156,8 @@ if __name__ == "__main__":
     # Cai dat bo loc crawl web
     # Web_filter.set_last_time("2016-10-26, 22:20:08+07:00")  # Bai viet moi hon ke tu thoi diem xxx
     # Web_filter.set_limit_time("2016-10-26, 22:20:08+07:00", "2016-10-26, 23:20:08+07:00")  # Bai viet trong khoang tg
-    Web_filter.set_max_count_web_each_domain(5)#(1000000000)  # moi domain khong vuot qua 1000
-    Web_filter.set_max_count_web_each_sublabel(1)#(100000)  # moi label trong 1 domain k vuot qua 100
+    Web_filter.set_max_count_web_each_domain(1000000000)  # moi domain khong vuot qua 1000
+    Web_filter.set_max_count_web_each_sublabel(100000)  # moi label trong 1 domain k vuot qua 100
 
 
 
