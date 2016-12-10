@@ -9,6 +9,8 @@ from web import *
 from libs_support import *
 from rss_parser import *
 from database import *
+from threading import Timer
+import time
 
 class Solr_helper:
 
@@ -69,6 +71,40 @@ class Solr_helper:
             print('Exception' + str(e))
             return None
 
+def crawl_data_to_file_from_link_rss(path_folder_save, link_rss):
+    parser = rss_parser(link_rss)
+    webs = parser.get_list_web()
+    for web_x in  webs:
+        web_x.write_to_file(path_folder_save)
+
+def crawl_data_to_file(path_folder_save):
+    rss_page_links = [
+        "http://vietbao.vn/vn/rss",
+        "http://vnexpress.net/rss",
+        "http://dantri.com.vn/rss",
+        "http://vtv.vn/rss",
+        "http://techtalk.vn/"
+    ]
+
+    idSleep = 0
+    if not os.path.exists(path_folder_save):
+        os.makedirs(path_folder_save)
+
+    # Cac trang co rss
+    while True:
+        for link_rss in rss_page_links:
+            args = []
+            args.append(path_folder_save)
+            args.append(link_rss)
+            threadCrawl = Timer(1, crawl_data_to_file_from_link_rss, args)
+            threadCrawl.start()  # chay luong moi
+
+        # nghi 15 phut cho lan crawl tiep theo
+        idSleep += 1
+        print "Id sleep to run new thread: {0}".format(idSleep)
+        time.sleep(15*60)
+
+
 def crawl_data():
     max_count_web = 500
     rss_page_links = [
@@ -96,7 +132,6 @@ def crawl_data():
         webs = parser.get_list_web()
         for web_x in  webs:
             data += (web_x.get_json()+",")
-            # web_x.write_to_file('/mnt/01CDF1ECE3AB4280/DH/NAM_5/Ki_1/TimkiemTrinhDien/BTL/vietnam-news/data-train')
 
     if data.__len__() > 1:
         data = data[:-1]+"]"
@@ -118,10 +153,16 @@ if __name__ == "__main__":
     t = 1
     t = t +  1
 
+    # Cai dat bo loc crawl web
+    # Web_filter.set_last_time("2016-10-26, 22:20:08+07:00")  # Bai viet moi hon ke tu thoi diem xxx
+    # Web_filter.set_limit_time("2016-10-26, 22:20:08+07:00", "2016-10-26, 23:20:08+07:00")  # Bai viet trong khoang tg
+    Web_filter.set_max_count_web_each_domain(1000000000)  # moi domain khong vuot qua 1000
+    Web_filter.set_max_count_web_each_sublabel(100000)  # moi label trong 1 domain k vuot qua 100
+
+
 
     # solr =  Solr_helper( db_name = "btl-tktdtt")
     # solr =  Solr_helper( db_name = "t2")
-
     # solr.set_solr_home("/mnt/01CDF1ECE3AB4280/DH/NAM_5/Ki_1/TimkiemTrinhDien/BTL/solr-6.2.1")
     # # # solr.update("/mnt/01CDF1ECE3AB4280/DH/NAM_5/Ki_1/TimkiemTrinhDien/BTL/vietnam-news/data-train/techtalk/Cong\ nghe/31fa871c7d521106e28c45f567a63445c33e1186.json")
     # #
@@ -145,10 +186,9 @@ if __name__ == "__main__":
     # "image_url": "https://dantri4.vcmedia.vn/zoom/80_50/2016/3b12b55f00000578-4012752-image-a-1-1481194854432-1481258252944-crop-1481258280959.jpg",
     # "date": "2016-12-09T12:19:00Z"
     # })
-
-    crawl_data()
-
     # data_json = (json.dumps(data_test,indent=4, separators=(',', ': '), ensure_ascii=False))
     # solr.update(data_json)
     # print (solr.reload())
 
+    # crawl_data()
+    crawl_data_to_file('DataOffline')
