@@ -14,7 +14,7 @@ import time
 
 class Solr_helper:
 
-    """ Ho tro He thong tu dong cap nhat du lieu - su dung post.jar de tu dong cap nhat du lieu moi vao he thong  theo
+    """ Ho tro He thong tu dong cap nhat du lieu - su dung Http-post de tu dong cap nhat du lieu moi vao he thong  theo
     tung khoang thoi gian nhat dinh """
 
     def __init__(self, db_name = "btl-tktdtt", domain = "localhost", port = 8983, solr_home = "."):
@@ -62,7 +62,8 @@ class Solr_helper:
     def reload(self):
         # post paterm: curl "http://localhost:8983/solr/admin/cores?action=RELOAD&core=mycore"
         # use Data with Index Handlers (DIH) Http post
-        url = "http://{0}:{1}/solr/admin/cores?action=RELOAD&core={2}" .format(self.server_domain, self.server_port,self.server_db_name)
+        url = "http://{0}:{1}/solr/admin/cores?action=RELOAD&core={2}" \
+            .format(self.server_domain, self.server_port,self.server_db_name)
         try:
             r = requests.post(url=url)
             r.close()
@@ -71,12 +72,18 @@ class Solr_helper:
             print('Exception' + str(e))
             return None
 
+# ======================================================================================================================
+# luong xu ly - Crawl du lieu to file
+# ======================================================================================================================
 def crawl_data_to_file_from_link_rss(path_folder_save, link_rss):
     parser = rss_parser(link_rss)
     webs = parser.get_list_web()
     for web_x in  webs:
         web_x.write_to_file(path_folder_save)
 
+# ======================================================================================================================
+# Crawl du lieu to file - da luong
+# ======================================================================================================================
 def crawl_data_to_file(path_folder_save):
     rss_page_links = [
         "http://vietbao.vn/vn/rss",
@@ -104,26 +111,62 @@ def crawl_data_to_file(path_folder_save):
         print "Id sleep to run new thread: {0}".format(idSleep)
         time.sleep(15*60)
 
+# ======================================================================================================================
+# Cap nhat offline du lieu cho server solr
+# ======================================================================================================================
+def update_data_offline(data, db_name_update):
+    solr = Solr_helper(db_name=db_name_update)
+    print (solr.update(data))
+    print (solr.reload())
 
+# ======================================================================================================================
+# Cap nhat offline du lieu cho server solr
+# ======================================================================================================================
+def update_data_offline_from_folder(path_folder_data, db_name):
+    data_files = ""
+    count_file = 0
+    count_file_update_one_time = 100
+
+    # Duyet dequi tat cac cac file .json trong thu muc - doc va cap nhat du lieu
+    for root, dirs, files in os.walk(path_folder_data):
+        for file in files:
+
+            if file.endswith(".json"):
+                count_file += 1
+
+                #  doc file
+                with open(os.path.join(root, file), 'r') as myfile:
+                    data = myfile.read()
+                    data_files += data+","
+
+                # cu count_file_update_one_time thi cap nhat 1 lan
+                if count_file > count_file_update_one_time:
+                    data_files = "[" + format(data_files[:-1]) + "]"
+                    update_data_offline(data_files, db_name)
+                    data_files = ""
+                    count_file = 0
+                    print ("Update -> ")
+
+    if data_files.__len__() > 0:
+        data_files = "[" + format(data_files[:-1]) + "]"
+        update_data_offline(data_files, db_name)
+
+# ======================================================================================================================
+# Cap nhat online du lieu cho server solr
+# ======================================================================================================================
 def crawl_data():
-    max_count_web = 500
     rss_page_links = [
-        #"http://vietbao.vn/vn/rss",
-        #"http://vnexpress.net/rss",
+        "http://vietbao.vn/vn/rss",
+        "http://vnexpress.net/rss",
         "http://dantri.com.vn/rss",
-        #"http://vtv.vn/rss",
+        "http://vtv.vn/rss",
         "http://techtalk.vn/"
     ]
+
     web_mannual_page_links = [
         # "vtv.vn"  ,
         "kenh14.vn"
     ]
-
-    # Cai dat bo loc crawl web
-    # Web_filter.set_last_time("2016-10-26, 22:20:08+07:00")  # Bai viet moi hon ke tu thoi diem xxx
-    # Web_filter.set_limit_time("2016-10-26, 22:20:08+07:00", "2016-10-26, 23:20:08+07:00")  # Bai viet trong khoang tg
-    Web_filter.set_max_count_web_each_domain(100000)  # moi domain khong vuot qua 1000
-    Web_filter.set_max_count_web_each_sublabel(1000)  # moi label trong 1 domain k vuot qua 100
 
     # Cac trang co rss
     data = "["
@@ -141,6 +184,10 @@ def crawl_data():
         print (solr.update(data))
         print (solr.reload())
 
+
+# ======================================================================================================================
+# Query test update
+# ======================================================================================================================
 def query():
     # http://localhost:8983/solr/btl-tktdtt/select?indent=on&q=*:*&wt=json	
     # http://localhost:8983/solr/btl-tktdtt/select?q=*:*&sort=dist(0,%2010,%2010)%20desc
@@ -148,7 +195,9 @@ def query():
     None
 
 
-
+# ======================================================================================================================
+# Main update data realtime
+# ======================================================================================================================
 if __name__ == "__main__":
     t = 1
     t = t +  1
@@ -191,4 +240,7 @@ if __name__ == "__main__":
     # print (solr.reload())
 
     # crawl_data()
-    crawl_data_to_file('DataOffline')
+    # crawl_data_to_file('DataOffline')
+
+
+    update_data_offline_from_folder("../vtv", "btl-tktdtt")
